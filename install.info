@@ -1,0 +1,12 @@
+Name: tesseract-build
+Cartridge-Short-Name: TESSERACT
+Display-Name: Tesseract Build Cartridge
+Version: 1.0
+Website: https://github.com/lucasvillar/openshift-tesseract-build-cartridge
+Source-Url: https://github.com/lucasvillar/openshift-tesseract-build-cartridge/archive/master.zip
+Cartridge-Version: 0.1.0
+Cartridge-Vendor: Villarcorp
+Categories:
+  - service
+Provides:
+  - tesseract

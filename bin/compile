@@ -1,0 +1,116 @@
+#!/bin/bash
+# usage: bin/compile <build-dir>
+
+#scripts vars
+BUILD_DIR=$1
+INSTALL_TEMP_DIR=$OPENSHIFT_TMP_DIR/b
+
+LIBTOOL_URL=http://ftpmirror.gnu.org/libtool/libtool-2.4.2.tar.gz
+LIBTOOL_FILE=libtool-2.4.2.tar.gz
+LIBTOOL_TEMP_DIR=libtool-2.4.2
+LIBTOOL_INSTALL_DIR=$BUILD_DIR/libtool
+
+
+LEPTONICA_URL=http://www.leptonica.com/source/leptonica-1.72.tar.gz
+LEPTONICA_FILE=leptonica-1.72.tar.gz
+LEPTONICA_TEMP_DIR=leptonica-1.72
+LEPTONICA_INSTALL_DIR=$BUILD_DIR/leptonica
+
+TESSERACT_URL=https://tesseract-ocr.googlecode.com/files/tesseract-ocr-3.02.02.tar.gz
+TESSERACT_FILE=tesseract-ocr-3.02.02.tar.gz
+TESSERACT_TEMP_DIR=tesseract-ocr
+TESSERACT_INSTALL_DIR=$BUILD_DIR/tesseract
+
+TESSERACT_ENVSCRIPT=$TESSERACT_INSTALL_DIR/tesseract-ocr.sh
+
+TESSERACT_TRAINNING_DATA=$TESSERACT_INSTALL_DIR/share/tessdata
+TESSERACT_DATA_TMP_DIR=$INSTALL_TEMP_DIR/tessdata
+TESSERACT_DATA_ENG=https://tesseract-ocr.googlecode.com/files/tesseract-ocr-3.02.eng.tar.gz
+TESSERACT_DATA_VERSION=3.02
+TESSERACT_DATA_LANG=POR,ESP,JNP
+TESSERACT_DATA_URL_BASE=https://tesseract-ocr.googlecode.com/files/tesseract-ocr-
+
+
+
+mkdir $INSTALL_TEMP_DIR
+
+# build libtool
+cd $INSTALL_TEMP_DIR
+
+wget $LIBTOOL_URL
+tar xfz $LIBTOOL_FILE
+cd $LIBTOOL_TEMP_DIR
+./configure --prefix=$LIBTOOL_INSTALL_DIR
+make
+make install
+
+#config temp-path
+export PATH=$PATH:$BUILD_DIR/libtool/bin
+rm -rf $LIBTOOL_TEMP_DIR
+
+
+# build leptonia
+cd $INSTALL_TEMP_DIR
+
+wget $LEPTONICA_URL
+tar xfz $LEPTONICA_FILE
+cd $LEPTONICA_TEMP_DIR
+./configure --prefix=$LEPTONICA_INSTALL_DIR
+make
+make install
+
+#set env vars
+export LIBLEPT_HEADERSDIR=$LEPTONICA_INSTALL_DIR/include
+export PATH=$PATH:$LEPTONICA_INSTALL_DIR/bin
+rm -f $LEPTONICA_TEMP_DIR
+
+
+# build tesseract
+cd $INSTALL_TEMP_DIR
+
+wget $TESSERACT_URL
+tar xfz $TESSERACT_FILE
+cd $TESSERACT_TEMP_DIR
+
+./autogen.sh
+./configure --prefix=$TESSERACT_INSTALL_DIR --with-extra-libraries=$LEPTONICA_INSTALL_DIR/lib
+make install
+
+chmod +x $TESSERACT_INSTALL_DIR/bin/tesseract
+export TESSDATA_PREFIX=$TESSERACT_TRAINNING_DATA
+
+
+mkdir -p $TESSERACT_DATA_TMP_DIR
+
+cd $TESSERACT_DATA_TMP_DIR
+
+#Download ENG lang (Default Tessaract Language)
+echo 'Getting tesseract-ocr training data'
+echo 'English training data'
+curl -0 $TESSERACT_DATA_ENG | tar -xz 
+
+#Download other data lang
+if [ $TESSERACT_LANG_DATA ]
+then
+   array=(${TESSERACT_LANG_DATA//,/ })
+   for i in "${!array[@]}"
+   do
+     lang="${array[i]}"
+     echo $lang 'training data - ' $TESSERACT_DATA_URL_BASE-$TESSERACT_DATA_VERSION.$lang.tar.gz
+
+     curl -0 $TESSERACT_DATA_URL_BASE-$TESSERACT_DATA_VERSION.$lang.tar.gz | tar -xz
+
+   done
+fi
+
+
+#Copy all file for data folder
+find -type f -exec mv {} $TESSERACT_TRAINNING_DATA \;
+
+echo "Building runtime environment for tesseract-ocr"
+echo "export PATH=\"$TESSERACT_INSTALL_DIR/bin/:\$PATH\"" > $TESSERACT_ENVSCRIPT
+echo "export TESSDATA_PREFIX=\"$$TESSERACT_TRAINNING_DATA/\"" >> $TESSERACT_ENVSCRIPT]
+
+
+#Remove Temp Data
+rm -rf $INSTALL_TEMP_DIR
