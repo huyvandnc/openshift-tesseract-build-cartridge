@@ -109,7 +109,7 @@ find -type f -exec mv {} $TESSERACT_TRAINNING_DATA \;
 
 echo "Building runtime environment for tesseract-ocr"
 echo "export PATH=\"$TESSERACT_INSTALL_DIR/bin/:\$PATH\"" > $TESSERACT_ENVSCRIPT
-echo "export TESSDATA_PREFIX=\"$$TESSERACT_TRAINNING_DATA/\"" >> $TESSERACT_ENVSCRIPT]
+echo "export TESSDATA_PREFIX=\"$$TESSERACT_TRAINNING_DATA/\"" >> $TESSERACT_ENVSCRIPT
 
 
 #Remove Temp Data
