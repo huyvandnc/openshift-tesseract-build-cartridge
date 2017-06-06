@@ -16,7 +16,7 @@ LEPTONICA_FILE=leptonica-1.72.tar.gz
 LEPTONICA_TEMP_DIR=leptonica-1.72
 LEPTONICA_INSTALL_DIR=$BUILD_DIR/leptonica
 
-TESSERACT_URL=https://tesseract-ocr.googlecode.com/files/tesseract-ocr-3.02.02.tar.gz
+TESSERACT_URL=https://rawgit.com/huyvandnc/openshift-tesseract-build-cartridge/master/tesseract-ocr-3.02.02.tar.gz
 TESSERACT_FILE=tesseract-ocr-3.02.02.tar.gz
 TESSERACT_TEMP_DIR=tesseract-ocr
 TESSERACT_INSTALL_DIR=$BUILD_DIR/tesseract
@@ -25,10 +25,10 @@ TESSERACT_ENVSCRIPT=$TESSERACT_INSTALL_DIR/tesseract-ocr.sh
 
 TESSERACT_TRAINNING_DATA=$TESSERACT_INSTALL_DIR/share/tessdata
 TESSERACT_DATA_TMP_DIR=$INSTALL_TEMP_DIR/tessdata
-TESSERACT_DATA_ENG=https://tesseract-ocr.googlecode.com/files/tesseract-ocr-3.02.eng.tar.gz
+TESSERACT_DATA_ENG=https://rawgit.com/huyvandnc/openshift-tesseract-build-cartridge/master/tesseract-ocr-3.02.eng.tar.gz
 TESSERACT_DATA_VERSION=3.02
 TESSERACT_DATA_LANG=POR,ESP,JNP
-TESSERACT_DATA_URL_BASE=https://tesseract-ocr.googlecode.com/files/tesseract-ocr-
+TESSERACT_DATA_URL_BASE=https://rawgit.com/huyvandnc/openshift-tesseract-build-cartridge/master/tesseract-ocr-3.02.eng.tar.gz
 
 
 
